@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "🚀 Finance Analyzer is running!"
+    return "Finance Analyzer is running!"
 
 if __name__ == "__main__":
     app.run(debug=True)
