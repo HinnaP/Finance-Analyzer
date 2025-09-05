@@ -1,37 +1,68 @@
+import sys
+import json
 import pandas as pd
+from pathlib import Path
 
-# Load data
-df = pd.read_csv("transactions.csv")
-
-# Clean columns
-df.columns = df.columns.str.strip().str.lower()
-
-=df["date"] = pd.to_datetime(df["date"])
+# Load category rules from JSON
+with open("categories.json", "r") as f:
+    category_rules = json.load(f)
 
 def categorize(description):
-    desc = description.lower()
-    if "rent" in desc:
-        return "Housing"
-    elif "starbucks" in desc or "kroger" in desc:
-        return "Food & Drink"
-    elif "netflix" in desc or "amazon" in desc:
-        return "Entertainment"
-    elif "uber" in desc or "gas" in desc:
-        return "Transport"
-    elif "paycheck" in desc:
-        return "Income"
-    else:
-        return "Other"
+    """Assign a category based on description text and rules in categories.json"""
+    desc = str(description).lower()
+    for category, keywords in category_rules.items():
+        if any(keyword in desc for keyword in keywords):
+            return category
+    return "Other"
 
-df["category"] = df["description"].apply(categorize)
+def main():
+    # Pick file from CLI or default to transactions.csv
+    filename = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("transactions.csv")
+    if not filename.exists():
+        print(f"File not found: {filename}")
+        sys.exit(1)
 
-print("=== Spending by Category ===")
-print(df.groupby("category")["amount"].sum())
+    # Load data
+    df = pd.read_csv(filename)
+    df.columns = df.columns.str.strip().str.lower()
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
+    df = df.dropna(subset=["date", "description", "amount"])
 
-# Totals by month
-df["month"] = df["date"].dt.to_period("M")
-print("\n=== Spending by Month ===")
-print(df.groupby("month")["amount"].sum())
+    # Categorize transactions
+    df["category"] = df["description"].apply(categorize)
+    df["month"] = df["date"].dt.to_period("M")
 
-print("\n=== Preview ===")
-print(df.head())
+    # Expenses (negative amounts)
+    expenses = df[df["amount"] < 0]
+    income = df[df["amount"] > 0]
+
+    print("=== Rows ===", len(df))
+    print()
+
+    print("=== Spending by Category (Expenses only) ===")
+    cat_spend = (expenses.groupby("category")["amount"]
+                 .sum()
+                 .sort_values())
+    print(cat_spend.to_string())
+    print()
+
+    print("=== Net by Month (Income + Expenses) ===")
+    net_by_month = (df.groupby("month")["amount"]
+                    .sum()
+                    .sort_index())
+    print(net_by_month.to_string())
+    print()
+
+    print("=== Top 10 Merchants by Spend ===")
+    merch_spend = (expenses.groupby("description")["amount"]
+                   .sum()
+                   .sort_values()
+                   .head(10))
+    print(merch_spend.to_string())
+    print()
+
+    print("=== Preview ===")
+    print(df.head(10).to_string(index=False))
+
+if __name__ == "__main__":
+    main()
