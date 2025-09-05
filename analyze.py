@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load data
-df = pd.read_csv("generate_transactions.csv")
+df = pd.read_csv("transactions.csv")
 
 # Clean columns
 df.columns = df.columns.str.strip().str.lower()
