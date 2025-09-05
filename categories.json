@@ -1,0 +1,11 @@
+{
+  "Housing": ["rent", "mortgage"],
+  "Utilities": ["electric", "water", "internet", "wifi"],
+  "Food & Drink": ["kroger", "costco", "starbucks", "chipotle", "restaurant", "grocery"],
+  "Transport": ["uber", "lyft", "gas", "shell", "bp", "bus", "train"],
+  "Entertainment": ["netflix", "spotify", "amazon", "movie", "hulu", "gaming"],
+  "Shopping": ["target", "walmart", "mall", "clothes", "shoes"],
+  "Health": ["cvs", "pharmacy", "doctor", "gym", "hospital"],
+  "Income": ["paycheck", "salary", "direct deposit", "bonus"],
+  "Other": []
+}
