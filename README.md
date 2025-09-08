@@ -13,11 +13,11 @@ git clone https://github.com/HinnaP/Finance-Analyzer.git
 cd Finance-Analyzer
 
 2. Create a virtual environment:
-- Windows (PowerShell)
+- Windows (PowerShell):
     - py -m venv venv
     - venv\Scripts\Activate
 
-- macOS/Linux
+- macOS/Linux:
     - python3 -m venv venv
     - source venv/bin/activate
 
