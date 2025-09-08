@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "finance-analyzer-hinna"
+version = "0.1.0"
+description = "Analyze personal finance CSVs: categorize and summarize spending."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "Hinna Parwez" }]
+dependencies = [
+  "pandas>=2.0",
+  "numpy>=1.25"
+]
+
+[project.scripts]
+finance-analyzer = "cli:main"
